@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>logo_audioplus.jpeg</file>
+  </qresource>
+  <qresource prefix="livio">
+    <file>livio.jpg</file>
+  </qresource>
+</RCC>
