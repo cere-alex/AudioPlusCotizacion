@@ -27,6 +27,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.boxPotencia.currentIndexChanged.connect(self.change_potencia)
         self.boxModelo.currentIndexChanged.connect(self.change_modelo)
         self.boxAudifono.currentIndexChanged.connect(self.change_audifono)
+        self.boxCantidad.setRange(0, 6)
         self.boxCantidad.valueChanged.connect(self.change_audifono)
         self.buttonBorrar.pressed.connect(self.reiniciar)
 
@@ -39,6 +40,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.boxPotencia.blockSignals(boolean)
         self.boxModelo.blockSignals(boolean)
         self.boxAudifono.blockSignals(boolean)
+        self.boxCantidad.blockSignals(boolean)
 
     def reiniciar(self):
         self.bloquear_senhal(True)
@@ -49,33 +51,12 @@ class MyWindow(QtWidgets.QMainWindow):
         self.boxCantidad.blockSignals(False)
         self.bloquear_senhal(False)
 
-    def crear_caja(self, cotizacion=ctz.seleccion_audifono()):
-        gama = cotizacion[0]
-        familia = cotizacion[1]
-        potencia = cotizacion[2]
-        modelo = cotizacion[3]
-        audifono = cotizacion[4]
+    def crear_caja(self,a=0, b=5, cotizacion=ctz.seleccion_audifono()):
         box = ['boxGama', 'boxFamilia', 'boxPotencia', 'boxModelo', 'boxAudifono']
-
-        for i in range(0, 5):
+        for i in range(a, b):
             for j in cotizacion[i]:
                 aux = getattr(self, '{}'.format(box[i]))
                 aux.addItem(j)
-
-        #
-        # for i in gama:
-        #     aux = getattr(self, 'boxGama')
-        #     print(aux)
-        #     aux.addItem(i)
-        #     # self.boxGama.addItem(i)
-        # for i in familia:
-        #     self.boxFamilia.addItem(i)
-        # for i in potencia:
-        #     self.boxPotencia.addItem(i)
-        # for i in modelo:
-        #     self.boxModelo.addItem(i)
-        # for i in audifono:
-        #     self.boxAudifono.addItem(i)
 
     def change_gama(self):
         self.boxCantidad.setValue(0)
@@ -85,73 +66,46 @@ class MyWindow(QtWidgets.QMainWindow):
             'Seleccione Uno'
         ]
         print(datos)
-
         cotizacion = ctz.seleccion_audifono(datos)
         self.bloquear_senhal(True)
-        self.boxFamilia.clear()
-        self.boxPotencia.clear()
-        self.boxModelo.clear()
-        self.boxAudifono.clear()
-        familia = cotizacion[1]
-        potencia = cotizacion[2]
-        modelo = cotizacion[3]
-        audifono = cotizacion[4]
-        for i in familia:
-            self.boxFamilia.addItem(i)
-        for i in potencia:
-            self.boxPotencia.addItem(i)
-        for i in modelo:
-            self.boxModelo.addItem(i)
-        for i in audifono:
-            self.boxAudifono.addItem(i)
+        self.delete(a=1)
+        self.crear_caja(a=1, cotizacion=cotizacion)
         self.bloquear_senhal(False)
 
     def change_familia(self):
         """Llena la caja familia con los items correspondientes"""
-        self.boxCantidad.setValue(0)
         gama = self.boxGama.currentText()
         familia = self.boxFamilia.currentText()
         datos = [
             gama, familia, 'Mostrar Todos', 'Mostrar Todos', 'Seleccione Uno'
         ]
         print(datos)
-
         cotizacion = ctz.seleccion_audifono(datos)
         self.bloquear_senhal(True)
-        self.boxPotencia.clear()
-        self.boxModelo.clear()
-        self.boxAudifono.clear()
-        potencia = cotizacion[2]
-        modelo = cotizacion[3]
-        audifono = cotizacion[4]
-        for i in potencia:
-            self.boxPotencia.addItem(i)
-        for i in modelo:
-            self.boxModelo.addItem(i)
-        for i in audifono:
-            self.boxAudifono.addItem(i)
+        self.delete(a=2)
+        self.crear_caja(a=2, cotizacion=cotizacion)
         self.bloquear_senhal(False)
 
     def change_potencia(self):
-        self.boxCantidad.setValue(0)
         gama = self.boxGama.currentText()
         familia = self.boxFamilia.currentText()
         potencia = self.boxPotencia.currentText()
         datos = [gama, familia, potencia, 'Mostrar Todos', 'Seleccione Uno']
         print(datos)
-
         cotizacion = ctz.seleccion_audifono(datos)
         self.bloquear_senhal(True)
-        self.boxCantidad.blockSignals(True)
-        self.boxModelo.clear()
-        self.boxAudifono.clear()
-        modelo = cotizacion[3]
-        audifono = cotizacion[4]
-        for i in modelo:
-            self.boxModelo.addItem(i)
-        for i in audifono:
-            self.boxAudifono.addItem(i)
-        self.boxCantidad.blockSignals(False)
+        # self.boxCantidad.blockSignals(True)
+        # self.boxModelo.clear()
+        # self.boxAudifono.clear()
+        # modelo = cotizacion[3]
+        # audifono = cotizacion[4]
+        # for i in modelo:
+        #     self.boxModelo.addItem(i)
+        # for i in audifono:
+        #     self.boxAudifono.addItem(i)
+        # self.boxCantidad.blockSignals(False)
+        self.delete(a=3)
+        self.crear_caja(a=3, cotizacion=cotizacion)
         self.bloquear_senhal(False)
 
     def change_modelo(self):
@@ -181,7 +135,7 @@ class MyWindow(QtWidgets.QMainWindow):
         print(datos)
         if self.boxCantidad.value() == 0:
             self.clear_line()
-        if audifono != 0 or self.cant != 0:
+        if audifono != 0:
             self.bloquear_senhal(True)
             self.cant = self.boxCantidad.value()
             # return es class_audifonos
@@ -197,14 +151,13 @@ class MyWindow(QtWidgets.QMainWindow):
             finally:
                 self.bloquear_senhal(False)
 
-    def delete(self):
-        self.boxGama.clear()
-        self.boxFamilia.clear()
-        self.boxPotencia.clear()
-        self.boxModelo.clear()
-        self.boxAudifono.clear()
-        self.boxCantidad.setRange(0, 6)
+    def delete(self,a=0,b=5):
         self.boxCantidad.setValue(0)
+        box = ['boxGama', 'boxFamilia', 'boxPotencia', 'boxModelo', 'boxAudifono']
+        for i in range(a, b):
+            aux = getattr(self, box[i])
+            aux.clear()
+
 
     def clear_line(self):
         self.linePrecio.setText('')
