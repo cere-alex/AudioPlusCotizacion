@@ -17,7 +17,7 @@ class MyWindow(QtWidgets.QMainWindow):
         print(locale.getlocale())
         self.cant = 0
         self.utility = 20
-        self.desc = 5
+        self.desc = 10
         self.logo.setPixmap(QPixmap('./logo_audioplus.jpg'))
         self.reiniciar()
         self.labelDescuento.setText('Descuento por el mes de {}'.format(
@@ -27,7 +27,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.boxPotencia.currentIndexChanged.connect(self.change_potencia)
         self.boxModelo.currentIndexChanged.connect(self.change_modelo)
         self.boxAudifono.currentIndexChanged.connect(self.change_audifono)
-        self.boxCantidad.setRange(0, 6)
+        self.boxCantidad.setRange(0, 2)
         self.boxCantidad.valueChanged.connect(self.change_audifono)
         self.buttonBorrar.pressed.connect(self.reiniciar)
 
@@ -128,7 +128,7 @@ class MyWindow(QtWidgets.QMainWindow):
         print(datos)
         if self.boxCantidad.value() == 0:
             self.clear_line()
-        if audifono != 0:
+        elif audifono != 0:
             self.bloquear_senhal(True)
             self.cant = self.boxCantidad.value()
             # return es class_audifonos
@@ -137,10 +137,25 @@ class MyWindow(QtWidgets.QMainWindow):
                 print(cotizacion)
                 ganancia = cotizacion.ganancia(cantidad=self.cant,
                                                utilidad=self.utility)
-                self.linePrecio.setText(str(ganancia))
+                # descuento por el mes de septiembre
+                if self.cant == 2:
+                    if cotizacion.gama == 'alta':
+                        self.desc = 50
+                    elif cotizacion.gama == 'media':
+                        self.desc = 40
+                    elif cotizacion.gama == 'standard':
+                        self.desc = 30
+                else:
+                    self.desc = 10
                 descuento = cotizacion.descuento(precio_final=ganancia,
-                                                 descuento=self.desc)
-                self.lineDescuento.setText(str(self.desc))
+                                                 descuento=self.desc,
+                                                 utilidad=self.utility,
+                                                 cantidad=self.cant)
+                self.linePrecio.setText(str(ganancia))
+                if self.cant == 1:
+                    self.lineDescuento.setText(str(self.desc))
+                else:
+                    self.lineDescuento.setText('{}% en el segundo audífono'.format(self.desc))
                 self.linePrecioFinal.setText(str(descuento))
             finally:
                 self.bloquear_senhal(False)

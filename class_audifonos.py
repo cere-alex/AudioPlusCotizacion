@@ -2,6 +2,7 @@
 import precio_cantidad_audifono as pca
 import math
 
+
 class audifonos:
     def __init__(self, familia, tecnologia, modelo, fuente, potencia, precio,
                  gama):
@@ -141,23 +142,32 @@ class audifonos:
 
                 aux2 = self.costos_dependiendo_gama(2)
 
-                suma= aux + aux2
+                suma = aux + aux2
 
             return suma
         except Exception as e:
             print('Ingrese un valor')
 
     def costo_total(self, cantidad):
-        return self._precio*cantidad + self.costos_dependiendo_gama(cantidad)
+        return self._precio * cantidad + self.costos_dependiendo_gama(cantidad)
 
     def ganancia(self, cantidad, utilidad):
-        u = 1 + (utilidad / 100)
+        if cantidad == 1:
+            u = 1 + (utilidad / 100)
+            redondeo = math.ceil(u * self.costo_total(cantidad) / 100) * 100
+            return redondeo
+        else:
+            g = self.ganancia(cantidad=1, utilidad=utilidad) * 2
+            return g
 
-        redondeo = math.ceil(u * self.costo_total(cantidad)/100) * 100
-        return redondeo
+    def descuento(self, precio_final, descuento, utilidad, cantidad):
+        if cantidad == 1:
+            return precio_final * (1 - descuento / 100)
+        else:
+            g_un_audifono = self.ganancia(cantidad=1, utilidad=utilidad)
+            g_dos_audif_promo = g_un_audifono * (2 - descuento/100)
+            return g_dos_audif_promo
 
-    def descuento(self, precio_final, descuento):
-        return precio_final*(1-descuento/100)
     def __str__(self):
         return f"el precio es de {self._precio}"
 
