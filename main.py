@@ -18,7 +18,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.cant = 0
         self.utility = 20
         self.desc = 5
-        self.logo.setPixmap(QPixmap('./logo_audioplus.jpeg'))
+        self.logo.setPixmap(QPixmap('./logo_audioplus.jpg'))
         self.reiniciar()
         self.labelDescuento.setText('Descuento por el mes de {}'.format(
             datetime.now().strftime('%B')))
